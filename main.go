@@ -35,7 +35,7 @@ func (w *Worker) scanData() {
 	fmt.Scan(&data)
 	w.mutex.Lock()
 	w.buffer = append(w.buffer, data)
-	w.mutex.Unlock()
+	defer w.mutex.Unlock()
 }
 
 // добавляет инфо в файл
@@ -65,7 +65,7 @@ func (w *Worker) timerAddData(ctx context.Context) {
 		select {
 		case <-ctx.Done():
 			return
-		default:
+		case <-timer.C:
 			w.addData()
 		}
 	}
